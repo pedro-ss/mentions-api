@@ -5,9 +5,12 @@ require('dotenv').config();
 // App
 const app = express();
 
+app.use(express.json());	
+app.use(express.urlencoded({extended: true}));
+
 // Database
 mongoose.connect(process.env.DATABASE_CONNECTION_STRING, {
-    useNewUrlParser: true,
+    useUnifiedTopology: true,
     useFindAndModify: true,
     useNewUrlParser: true,
     useCreateIndex: true 
@@ -35,12 +38,15 @@ process.on('SIGINT', () => {
         process.exit(0);
     });
 });
+// Load models
+const Mentions = require('../models/mentions');
 
 // Load routes
 const indexRoutes = require('../routes/index-routes');
 app.use('/', indexRoutes);
 
-// Load models
-const Mentions = require('../models/mentions');
+const mentionsRoutes = require('../routes/mentions-routes');
+app.use('/mentions', mentionsRoutes);
+
 
 module.exports = app;
